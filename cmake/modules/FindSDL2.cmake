@@ -59,8 +59,12 @@
 # To use, just add a COMPONENTS component1 component2 to find_package.
 # example: find_package ( SDL2 COMPONENTS mixer gfx )
 #          Will look for SDL, SDL_mixer and SDL_gfx.
-# For each components, SDL${UPPERCOMPONENT}_FOUND will be set if the component is found. the module will also set SDL${UPPERCOMPONENT}_LIBRARY for the library and SDL${UPPERCOMPONENT}_INCLUDE_DIR) for include dir of the library. UPPERCOMPONENT is the name of the component in upper-case(mixer => MIXER)
-# Each component is first search in the SDL${UPPERCOMPONENT}DIR environment variable, then in the found SDL dir. The search is then performed in the standard directory of the platform.
+# For each components, SDL${UPPERCOMPONENT}_FOUND will be set if the component is found.
+# the module will also set SDL${UPPERCOMPONENT}_LIBRARY for the library
+# and SDL${UPPERCOMPONENT}_INCLUDE_DIR for include dir of the library.
+# UPPERCOMPONENT is the name of the component in upper-case(mixer => MIXER)
+# Each component is first search in the SDL${UPPERCOMPONENT}DIR environment variable,
+# then in the found SDL dir. The search is then performed in the standard directory of the platform.
 
 #=============================================================================
 # Copyright 2003-2009 Kitware, Inc.
@@ -280,3 +284,4 @@ find_sdl_version ( "${SDL_INCLUDE_DIR}/SDL_version.h"
   SDL_MAJOR
   SDL_MINOR
   SDL_MICRO )
+  
