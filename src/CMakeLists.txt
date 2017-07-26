@@ -137,7 +137,7 @@ set ( engine_src
   Engine/Surface.cpp
   Engine/SurfaceSet.cpp
   Engine/Timer.cpp
-  Engine/Zoom.cpp
+#   Engine/Zoom.cpp
 )
 
 set ( geoscape_src
@@ -453,7 +453,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES FreeBSD OR ${CMAKE_SYSTEM_NAME} MATCHES NetBSD 
   set ( system_libs -lexecinfo )
 endif ()
 
-target_link_libraries ( openxcom ${system_libs} ${SDL_LIBRARIES} ${OPENGL_gl_LIBRARY} debug ${YAMLCPP_LIBRARY_DEBUG} optimized ${YAMLCPP_LIBRARY} )
+target_link_libraries ( openxcom ${system_libs} ${SDL2_LIBS} ${OPENGL_gl_LIBRARY} debug ${YAMLCPP_LIBRARY_DEBUG} optimized ${YAMLCPP_LIBRARY} )
 
 set ( bin_data_dirs TFTD UFO common standard )
 foreach ( binpath ${bin_data_dirs} )

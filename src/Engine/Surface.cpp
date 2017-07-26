@@ -20,7 +20,7 @@
 #include "ShaderDraw.h"
 #include <vector>
 #include <fstream>
-#include <SDL_gfxPrimitives.h>
+#include <SDL2_gfxPrimitives.h>
 #include <SDL_image.h>
 #include <SDL_endian.h>
 #include "../lodepng.h"
@@ -145,7 +145,7 @@ Surface::Surface(int width, int height, int x, int y, int bpp) : _x(x), _y(y), _
 		throw Exception(SDL_GetError());
 	}
 
-	SDL_SetColorKey(_surface, SDL_SRCCOLORKEY, 0);
+	SDL_SetColorKey(_surface, SDL_TRUE, 0);
 
 	_crop.w = 0;
 	_crop.h = 0;
@@ -172,9 +172,9 @@ Surface::Surface(const Surface& other)
 		int pitch = GetPitch(bpp, width);
 		_alignedBuffer = NewAligned(bpp, width, height);
 		_surface = SDL_CreateRGBSurfaceFrom(_alignedBuffer, width, height, bpp, pitch, 0, 0, 0, 0);
-		SDL_SetColorKey(_surface, SDL_SRCCOLORKEY, 0);
+		SDL_SetColorKey(_surface, SDL_TRUE, 0);
 		//cant call `setPalette` because its virtual function and it dont work correctly in constructor
-		SDL_SetColors(_surface, other.getPalette(), 0, 255);
+		SDL_SetPaletteColors(_surface->format->palette, other.getPalette(), 0, 255);
 		memcpy(_alignedBuffer, other._alignedBuffer, height*pitch);
 	}
 	else
@@ -288,13 +288,13 @@ void Surface::loadImage(const std::string &filename)
 					for (int c = 0; c < _surface->format->palette->ncolors; ++c)
 					{
 						SDL_Color *palColor = _surface->format->palette->colors + c;
-						if (palColor->unused == 0)
+						if (palColor->a == 0)
 						{
 							transparent = c;
 							break;
 						}
 					}
-					SDL_SetColorKey(_surface, SDL_SRCCOLORKEY, transparent);
+					SDL_SetColorKey(_surface, SDL_TRUE, transparent);
 				}
 			}
 		}
@@ -696,7 +696,7 @@ void Surface::drawRect(Sint16 x, Sint16 y, Sint16 w, Sint16 h, Uint8 color)
  */
 void Surface::drawLine(Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 color)
 {
-	lineColor(_surface, x1, y1, x2, y2, Palette::getRGBA(getPalette(), color));
+	lineColor(_renderer, x1, y1, x2, y2, Palette::getRGBA(getPalette(), color));
 }
 
 /**
@@ -708,7 +708,7 @@ void Surface::drawLine(Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 color)
  */
 void Surface::drawCircle(Sint16 x, Sint16 y, Sint16 r, Uint8 color)
 {
-	filledCircleColor(_surface, x, y, r, Palette::getRGBA(getPalette(), color));
+	filledCircleColor(_renderer, x, y, r, Palette::getRGBA(getPalette(), color));
 }
 
 /**
@@ -720,7 +720,7 @@ void Surface::drawCircle(Sint16 x, Sint16 y, Sint16 r, Uint8 color)
  */
 void Surface::drawPolygon(Sint16 *x, Sint16 *y, int n, Uint8 color)
 {
-	filledPolygonColor(_surface, x, y, n, Palette::getRGBA(getPalette(), color));
+	filledPolygonColor(_renderer, x, y, n, Palette::getRGBA(getPalette(), color));
 }
 
 /**
@@ -734,7 +734,7 @@ void Surface::drawPolygon(Sint16 *x, Sint16 *y, int n, Uint8 color)
  */
 void Surface::drawTexturedPolygon(Sint16 *x, Sint16 *y, int n, Surface *texture, int dx, int dy)
 {
-	texturedPolygon(_surface, x, y, n, texture->getSurface(), dx, dy);
+	texturedPolygon(_renderer, x, y, n, texture->getSurface(), dx, dy);
 }
 
 /**
@@ -746,7 +746,7 @@ void Surface::drawTexturedPolygon(Sint16 *x, Sint16 *y, int n, Surface *texture,
  */
 void Surface::drawString(Sint16 x, Sint16 y, const char *s, Uint8 color)
 {
-	stringColor(_surface, x, y, s, Palette::getRGBA(getPalette(), color));
+	stringColor(_renderer, x, y, s, Palette::getRGBA(getPalette(), color));
 }
 
 /**
@@ -816,7 +816,7 @@ SDL_Rect *Surface::getCrop()
 void Surface::setPalette(SDL_Color *colors, int firstcolor, int ncolors)
 {
 	if (_surface->format->BitsPerPixel == 8)
-		SDL_SetColors(_surface, colors, firstcolor, ncolors);
+		SDL_SetPaletteColors(_surface->format->palette, colors, firstcolor, ncolors);
 }
 
 /**
@@ -992,8 +992,8 @@ void Surface::resize(int width, int height)
 	}
 
 	// Copy old contents
-	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, 0);
-	SDL_SetColors(surface, getPalette(), 0, 256);
+	SDL_SetColorKey(surface, SDL_TRUE, 0);
+	SDL_SetPaletteColors(surface->format->palette, getPalette(), 0, 256);
 	SDL_BlitSurface(_surface, 0, surface, 0);
 
 	// Delete old surface

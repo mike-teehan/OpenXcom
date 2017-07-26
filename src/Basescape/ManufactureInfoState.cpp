@@ -568,8 +568,12 @@ void ManufactureInfoState::onLessEngineer()
  */
 void ManufactureInfoState::handleWheelEngineer(Action *action)
 {
-	if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP) moreEngineer(Options::changeValueByMouseWheel);
-	else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN) lessEngineer(Options::changeValueByMouseWheel);
+    SDL_MouseButtonEvent btn = action->getDetails()->button;
+    SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+	if (btn.button == SDL_MOUSEWHEEL && whl.y < 0)
+		moreEngineer(Options::changeValueByMouseWheel);
+	else if (btn.button == SDL_MOUSEWHEEL && whl.y < 0)
+		lessEngineer(Options::changeValueByMouseWheel);
 }
 
 /**
@@ -596,8 +600,12 @@ void ManufactureInfoState::onLessUnit()
  */
 void ManufactureInfoState::handleWheelUnit(Action *action)
 {
-	if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP) moreUnit(Options::changeValueByMouseWheel);
-	else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN) lessUnit(Options::changeValueByMouseWheel);
+    SDL_MouseButtonEvent btn = action->getDetails()->button;
+    SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+	if (btn.button == SDL_MOUSEWHEEL && whl.y < 0)
+		moreUnit(Options::changeValueByMouseWheel);
+	else if (btn.button == SDL_MOUSEWHEEL && whl.y > 0)
+		lessUnit(Options::changeValueByMouseWheel);
 }
 
 /**

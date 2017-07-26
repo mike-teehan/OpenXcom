@@ -73,8 +73,8 @@ void Music::load(const void *data, int size)
 {
 #ifndef __NO_MUSIC
 	SDL_RWops *rwops = SDL_RWFromConstMem(data, size);
-	_music = Mix_LoadMUS_RW(rwops);
-	SDL_FreeRW(rwops);
+	_music = Mix_LoadMUS_RW(rwops, false);
+	SDL_FreeRW(rwops); // FIXME: does this leak?
 	if (_music == 0)
 	{
 		throw Exception(Mix_GetError());

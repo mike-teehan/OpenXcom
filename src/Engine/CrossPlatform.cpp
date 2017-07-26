@@ -883,7 +883,7 @@ void setWindowIcon(int winResource, const std::string &unixPath)
 	SDL_Surface *icon = IMG_Load(utf8.c_str());
 	if (icon != 0)
 	{
-		SDL_WM_SetIcon(icon, NULL);
+// 		SDL_WM_SetIcon(icon, NULL); // FIXME SDL_SetWindowIcon is a thing
 		SDL_FreeSurface(icon);
 	}
 #endif

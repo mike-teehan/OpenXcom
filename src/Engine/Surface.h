@@ -37,6 +37,7 @@ class Surface
 {
 protected:
 	SDL_Surface *_surface;
+	SDL_Renderer *_renderer;
 	int _x, _y;
 	SDL_Rect _crop, _clear;
 	bool _visible, _hidden, _redraw, _tftdMode;

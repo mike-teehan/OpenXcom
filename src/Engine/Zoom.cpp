@@ -666,6 +666,10 @@ void Zoom::flipWithZoom(SDL_Surface *src, SDL_Surface *dst, int topBlackBand, in
 #ifndef __NO_OPENGL
 		if (glOut->buffer_surface)
 		{
+			SDL_Renderer *ren = SDL_CreateRenderer(0, -1, SDL_RENDERER_ACCELERATED);
+			SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, src);
+			
+
 			SDL_BlitSurface(src, 0, glOut->buffer_surface->getSurface(), 0); // TODO; this is less than ideal...
 
 			glOut->refresh(glOut->linear, glOut->iwidth, glOut->iheight, dst->w, dst->h, topBlackBand, bottomBlackBand, leftBlackBand, rightBlackBand);

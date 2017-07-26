@@ -109,10 +109,10 @@ StartState::StartState() : _anim(0)
  */
 StartState::~StartState()
 {
-	if (_thread != 0)
-	{
-		SDL_KillThread(_thread);
-	}
+// 	if (_thread != 0) // FIXME if SDL_KillThread is bad, what is good?
+// 	{
+// 		SDL_KillThread(_thread);
+// 	}
 	delete _font;
 	delete _timer;
 	delete _lang;
@@ -135,7 +135,7 @@ void StartState::init()
 	}
 
 	// Load the game data in a separate thread
-	_thread = SDL_CreateThread(load, (void*)_game);
+	_thread = SDL_CreateThread(load, "OpenXcomLAUDEUR", (void*)_game);
 	if (_thread == 0)
 	{
 		// If we can't create the thread, just load it as usual

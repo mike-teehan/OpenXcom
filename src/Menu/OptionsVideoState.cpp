@@ -78,20 +78,19 @@ OptionsVideoState::OptionsVideoState(OptionsOrigin origin) : OptionsBaseState(or
 	_btnRootWindowedMode = new ToggleTextButton(104, 16, 206, 128);
 
 	// Get available fullscreen modes
-	_res = SDL_ListModes(NULL, SDL_FULLSCREEN);
+// 	_res = SDL_ListModes(NULL, SDL_FULLSCREEN);
 	if (_res != (SDL_Rect**)-1 && _res != (SDL_Rect**)0)
 	{
-		int i;
-		_resCurrent = -1;
-		for (i = 0; _res[i]; ++i)
+		_resAmount = SDL_GetNumDisplayModes(0);
+		SDL_DisplayMode curMode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
+		for (int i = 0; i < _resAmount; ++i)
 		{
-			if (_resCurrent == -1 &&
-				((_res[i]->w == Options::displayWidth && _res[i]->h <= Options::displayHeight) || _res[i]->w < Options::displayWidth))
+			SDL_GetDisplayMode(0, i, &curMode);
+			if ((curMode.w == Options::displayWidth && curMode.h <= Options::displayHeight) || curMode.w < Options::displayWidth)
 			{
 				_resCurrent = i;
 			}
 		}
-		_resAmount = i;
 	}
 	else
 	{
@@ -174,7 +173,7 @@ OptionsVideoState::OptionsVideoState(OptionsOrigin origin) : OptionsBaseState(or
 	_btnLetterbox->onMouseOut((ActionHandler)&OptionsVideoState::txtTooltipOut);
 	
 	_btnLockMouse->setText(tr("STR_LOCK_MOUSE"));
-	_btnLockMouse->setPressed(Options::captureMouse == SDL_GRAB_ON);
+	_btnLockMouse->setPressed(Options::captureMouse == SDL_TRUE);
 	_btnLockMouse->onMouseClick((ActionHandler)&OptionsVideoState::btnLockMouseClick);
 	_btnLockMouse->setTooltip("STR_LOCK_MOUSE_DESC");
 	_btnLockMouse->onMouseIn((ActionHandler)&OptionsVideoState::txtTooltipIn);
@@ -554,8 +553,8 @@ void OptionsVideoState::btnLetterboxClick(Action *)
  */
 void OptionsVideoState::btnLockMouseClick(Action *)
 {
-	Options::captureMouse = (SDL_GrabMode)_btnLockMouse->getPressed();
-	SDL_WM_GrabInput(Options::captureMouse);
+	Options::captureMouse = (SDL_bool)_btnLockMouse->getPressed();
+	SDL_SetRelativeMouseMode(Options::captureMouse);
 }
 
 /**
@@ -617,7 +616,7 @@ void OptionsVideoState::handle(Action *action)
 	State::handle(action);
 	if (action->getDetails()->type == SDL_KEYDOWN && action->getDetails()->key.keysym.sym == SDLK_g && (SDL_GetModState() & KMOD_CTRL) != 0)
 	{
-		_btnLockMouse->setPressed(Options::captureMouse == SDL_GRAB_ON);
+		_btnLockMouse->setPressed(Options::captureMouse == SDL_TRUE);
 	}
 }
 

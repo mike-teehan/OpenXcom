@@ -12,6 +12,7 @@ SET(SDL2_SEARCH_PATHS
 )
 
 SET(SDL2_LIBRARIES "")
+SET(SDL2_LIBS "")
 
 macro(FindComponent UCOMP)
 
@@ -23,23 +24,27 @@ macro(FindComponent UCOMP)
     endif("${UCOMP}" STRGREATER "")
 
     # find the lib itself
-    find_library(SDL2${SDL2_COMPONENT}_LIB
+    find_library(SDL2${SDL2_COMPONENT}
         NAMES "SDL2${SDL2_COMPONENT}"
         HINTS
             $ENV{SDL2DIR}
         PATH_SUFFIXES lib64 lib lib/x86_64-linux-gnu
         PATHS ${SDL2_SEARCH_PATHS}
     )
-    MESSAGE("SDL2${SDL2_COMPONENT}_LIB is ${SDL2${SDL2_COMPONENT}_LIB}")
-    set(SDL2${SDL2_COMPONENT}_LIB "${SDL2${SDL2_COMPONENT}_LIB}")
+    MESSAGE("SDL2${SDL2_COMPONENT} is ${SDL2${SDL2_COMPONENT}}")
+    set(SDL2${SDL2_COMPONENT} "${SDL2${SDL2_COMPONENT}}")
 
-    if(EXISTS "${SDL2${SDL2_COMPONENT}_LIB}")
-        set(SDL2_LIBRARIES "${SDL2_LIBRARIES} ${SDL2${SDL2_COMPONENT}_LIB}")
+    if(EXISTS "${SDL2${SDL2_COMPONENT}}")
+        set(SDL2_LIBRARIES "${SDL2_LIBRARIES} ${SDL2${SDL2_COMPONENT}}")
+        string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
+        set(SDL2_LIBS "${SDL2_LIBS} -lSDL2${SDL2_COMPONENT}")
+        string(STRIP ${SDL2_LIBS} SDL2_LIBS)
         set(SDL2${SDL2_COMPONENT}_FOUND "TRUE")
     else()
         set(SDL2${SDL2_COMPONENT}_FOUND "FALSE")
-    endif(EXISTS "${SDL2${SDL2_COMPONENT}_LIB}")
+    endif(EXISTS "${SDL2${SDL2_COMPONENT}}")
     message("SDL2${SDL2_COMPONENT}_FOUND: ${SDL2${SDL2_COMPONENT}_FOUND}")
+    message("SDL2_LIBS: ${SDL2_LIBS}")
 
 endmacro()
 

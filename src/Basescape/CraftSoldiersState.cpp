@@ -356,7 +356,7 @@ void CraftSoldiersState::moveSoldierUp(Action *action, unsigned int row, bool ma
 		_base->getSoldiers()->at(row - 1) = s;
 		if (row != _lstSoldiers->getScroll())
 		{
-			SDL_WarpMouse(action->getLeftBlackBand() + action->getXMouse(), action->getTopBlackBand() + action->getYMouse() - static_cast<Uint16>(8 * action->getYScale()));
+			SDL_WarpMouseGlobal(action->getLeftBlackBand() + action->getXMouse(), action->getTopBlackBand() + action->getYMouse() - static_cast<Uint16>(8 * action->getYScale()));
 		}
 		else
 		{
@@ -409,7 +409,7 @@ void CraftSoldiersState::moveSoldierDown(Action *action, unsigned int row, bool 
 		_base->getSoldiers()->at(row + 1) = s;
 		if (row != _lstSoldiers->getVisibleRows() - 1 + _lstSoldiers->getScroll())
 		{
-			SDL_WarpMouse(action->getLeftBlackBand() + action->getXMouse(), action->getTopBlackBand() + action->getYMouse() + static_cast<Uint16>(8 * action->getYScale()));
+			SDL_WarpMouseGlobal(action->getLeftBlackBand() + action->getXMouse(), action->getTopBlackBand() + action->getYMouse() + static_cast<Uint16>(8 * action->getYScale()));
 		}
 		else
 		{
@@ -472,8 +472,10 @@ void CraftSoldiersState::lstSoldiersMousePress(Action *action)
 		return;
 	unsigned int row = _lstSoldiers->getSelectedRow();
 	size_t numSoldiers = _base->getSoldiers()->size();
-	if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP &&
-		row > 0)
+
+    SDL_MouseButtonEvent btn = action->getDetails()->button;
+    SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+	if (btn.button == SDL_MOUSEWHEEL && whl.y < 0 && row > 0)
 	{
 		if (action->getAbsoluteXMouse() >= _lstSoldiers->getArrowsLeftEdge() &&
 			action->getAbsoluteXMouse() <= _lstSoldiers->getArrowsRightEdge())
@@ -481,7 +483,7 @@ void CraftSoldiersState::lstSoldiersMousePress(Action *action)
 			moveSoldierUp(action, row);
 		}
 	}
-	else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN &&
+	else if (btn.button == SDL_MOUSEWHEEL && whl.y > 0 &&
 			 0 < numSoldiers && INT_MAX >= numSoldiers && row < numSoldiers - 1)
 	{
 		if (action->getAbsoluteXMouse() >= _lstSoldiers->getArrowsLeftEdge() &&

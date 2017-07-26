@@ -272,13 +272,13 @@ void OptionsModsState::moveModUp(Action *action, unsigned int row, bool max)
 		if (curScrollPos < targetScrollPos)
 		{
 			int ydiff = _lstMods->getTextHeight(row - 1);
-			SDL_WarpMouse(action->getLeftBlackBand() + action->getXMouse(),
+			SDL_WarpMouseGlobal(action->getLeftBlackBand() + action->getXMouse(),
 				 action->getTopBlackBand() + action->getYMouse() - static_cast<Uint16>(ydiff * action->getYScale()));
 		}
 		else
 		{
 			int ydiff = _lstMods->getRowY(row) - _lstMods->getY();
-			SDL_WarpMouse(action->getLeftBlackBand() + action->getXMouse(),
+			SDL_WarpMouseGlobal(action->getLeftBlackBand() + action->getXMouse(),
 				 action->getTopBlackBand() + action->getYMouse() - static_cast<Uint16>(ydiff * action->getYScale()));
 			_lstMods->scrollTo(targetScrollPos);
 		}
@@ -356,13 +356,13 @@ void OptionsModsState::moveModDown(Action *action, unsigned int row, bool max)
 		if (curScrollPos + (int)_lstMods->getVisibleRows() > targetScrollPos)
 		{
 			int ydiff = _lstMods->getTextHeight(row + 1);
-			SDL_WarpMouse(action->getLeftBlackBand() + action->getXMouse(),
+			SDL_WarpMouseGlobal(action->getLeftBlackBand() + action->getXMouse(),
 				 action->getTopBlackBand() + action->getYMouse() + static_cast<Uint16>(ydiff * action->getYScale()));
 		}
 		else
 		{
 			int ydiff = _lstMods->getY() + _lstMods->getHeight() - (_lstMods->getRowY(row) + _lstMods->getTextHeight(row));
-			SDL_WarpMouse(action->getLeftBlackBand() + action->getXMouse(),
+			SDL_WarpMouseGlobal(action->getLeftBlackBand() + action->getXMouse(),
 				 action->getTopBlackBand() + action->getYMouse() + static_cast<Uint16>(ydiff * action->getYScale()));
 			_lstMods->scrollTo(targetScrollPos - _lstMods->getVisibleRows() + 1);
 		}
@@ -379,8 +379,9 @@ void OptionsModsState::lstModsMousePress(Action *action)
 		return;
 	unsigned int row = _lstMods->getSelectedRow();
 	size_t numMods = _mods.size();
-	if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP &&
-		row > 0)
+	SDL_MouseButtonEvent btn = action->getDetails()->button;
+	SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+	if (btn.button == SDL_MOUSEWHEEL && whl.y < 0 && row > 0)
 	{
 		if (action->getAbsoluteXMouse() >= _lstMods->getArrowsLeftEdge() &&
 			action->getAbsoluteXMouse() <= _lstMods->getArrowsRightEdge())
@@ -388,8 +389,8 @@ void OptionsModsState::lstModsMousePress(Action *action)
 			moveModUp(action, row);
 		}
 	}
-	else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN &&
-			 0 < numMods && INT_MAX >= numMods && row < numMods - 1)
+	else if (btn.button == SDL_MOUSEWHEEL && whl.y > 0 &&
+		0 < numMods && INT_MAX >= numMods && row < numMods - 1)
 	{
 		if (action->getAbsoluteXMouse() >= _lstMods->getArrowsLeftEdge() &&
 			action->getAbsoluteXMouse() <= _lstMods->getArrowsRightEdge())

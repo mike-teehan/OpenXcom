@@ -75,14 +75,12 @@ void Camera::mousePress(Action *action, State *)
 	}
 	else if (Options::battleDragScrollButton != SDL_BUTTON_MIDDLE || (SDL_GetMouseState(0,0)&SDL_BUTTON(Options::battleDragScrollButton)) == 0)
 	{
-		if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP)
-		{
-			up();
-		}
-		else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN)
-		{
+		SDL_MouseButtonEvent btn = action->getDetails()->button;
+		SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+		if(btn.button == SDL_MOUSEWHEEL && whl.y < 0)
+				up();
+		else if(btn.button == SDL_MOUSEWHEEL && whl.y < 0)
 			down();
-		}
 	}
 }
 

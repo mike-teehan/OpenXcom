@@ -45,7 +45,7 @@ public:
 	/// Creates a int option.
 	OptionInfo(const std::string &id, int *option, int def, const std::string &desc = "", const std::string &cat = "");
 	/// Creates a key option.
-	OptionInfo(const std::string &id, SDL_Keycode *option, SDL_Keycode def, const std::string &desc = "", const std::string &cat = "");
+// 	OptionInfo(const std::string &id, SDL_Keycode *option, SDL_Keycode def, const std::string &desc, const std::string &cat);
 	/// Creates a string option.
 	OptionInfo(const std::string &id, std::string *option, const char *def, const std::string &desc = "", const std::string &cat = "");
 	/// Gets a bool option pointer.

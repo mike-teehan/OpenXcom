@@ -38,7 +38,9 @@ class Action;
 class Screen
 {
 private:
+	SDL_Window *_window;
 	SDL_Surface *_screen;
+	SDL_Renderer *_renderer;
 	int _bpp;
 	int _baseWidth, _baseHeight;
 	double _scaleX, _scaleY;
@@ -52,12 +54,14 @@ private:
 	SDL_Rect _clear;
 	/// Sets the _flags and _bpp variables based on game options; needed in more than one place now
 	void makeVideoFlags();
+	std::string _title;
 public:
 	static const int ORIGINAL_WIDTH;
 	static const int ORIGINAL_HEIGHT;
 
+	SDL_Window *window() { return _window; }
 	/// Creates a new display screen.
-	Screen();
+	Screen(const std::string &title);
 	/// Cleans up the display screen.
 	~Screen();
 	/// Get horizontal offset.

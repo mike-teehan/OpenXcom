@@ -536,7 +536,9 @@ void TransferItemsState::lstItemsRightArrowClick(Action *action)
 void TransferItemsState::lstItemsMousePress(Action *action)
 {
 	_sel = _lstItems->getSelectedRow();
-	if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP)
+	SDL_MouseButtonEvent btn = action->getDetails()->button;
+	SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+	if (btn.button == SDL_MOUSEWHEEL && whl.y < 0)
 	{
 		_timerInc->stop();
 		_timerDec->stop();
@@ -546,7 +548,7 @@ void TransferItemsState::lstItemsMousePress(Action *action)
 			increaseByValue(Options::changeValueByMouseWheel);
 		}
 	}
-	else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN)
+	else if (btn.button == SDL_MOUSEWHEEL && whl.y < 0)
 	{
 		_timerInc->stop();
 		_timerDec->stop();

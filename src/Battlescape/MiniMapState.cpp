@@ -105,14 +105,12 @@ void MiniMapState::handle(Action *action)
 	State::handle(action);
 	if (action->getDetails()->type == SDL_MOUSEBUTTONDOWN)
 	{
-		if (action->getDetails()->button.button == SDL_BUTTON_WHEELUP)
-		{
+		SDL_MouseButtonEvent btn = action->getDetails()->button;
+		SDL_MouseWheelEvent whl = action->getDetails()->wheel;
+		if (btn.button == SDL_MOUSEWHEEL && whl.y < 0)
 			btnLevelUpClick(action);
-		}
-		else if (action->getDetails()->button.button == SDL_BUTTON_WHEELDOWN)
-		{
+		else if(btn.button == SDL_MOUSEWHEEL && whl.y > 0)
 			btnLevelDownClick(action);
-		}
 	}
 }
 
